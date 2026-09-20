@@ -1,16 +1,19 @@
 from adapters.PlanAdapter import PlanAdapter
 from adapters.Plan import Plan
-def buildToolDescriptions(toolAdapter):
+import cache.ToolDataLoader
+
+def buildToolDescriptions(toolAdapter, associated_tools):
     toolDescription = ""
     for tool in toolAdapter.getTools():
-        toolDescription += "- Name : " + tool.getName() + " Description : " + tool.getDescription() + "\n"
+        if tool.getToolId() in associated_tools:
+            toolDescription += "- Name : " + tool.getName() + " Description : " + tool.getDescription() + " Method: " + tool.getMethod() + " Parameters: " + str(tool.getParameters()) + "\n"
     return toolDescription
 
 def buildAgentDescriptions(agentAdapter, associated_agents):
     agentDescriptions = ""
     for agent in agentAdapter.getAgents():
         if agent.getAgentId() in associated_agents:
-            agentDescriptions += "- Name : "+ agent.getName() + " Description : " + agent.getDescription() + "\n"
+            agentDescriptions += "- Name : "+ agent.getName() + " Description : " + agent.getDescription() + " Class Name: " + agent.getClassName() + "\n"
     return agentDescriptions
 
 def parseSessionHistory(sessionHistory):
@@ -24,16 +27,14 @@ class PlanPromptHelper:
     def __init__(self):
         self.planPromptPath = "C:\\Code\\Jarvis\\prompts\\planning_prompt.txt"
 
-    def generatePlanningPrompt(self, sessionId, context, toolAdapter, agentAdapter, associated_agents):
-        promptTemplate = ""
-        with open(self.planPromptPath, "r") as f:
-            promptTemplate += str(f.readlines())
+    def generatePlanningPrompt(self, sessionId, context, toolAdapter, agentAdapter, associated_agents, associated_tools):
+        promptTemplate = cache.ToolDataLoader.getPrompt("planning_prompt.txt")
 
 
         promptTemplate = promptTemplate.replace("{{AVAILABLE_AGENTS}}", buildAgentDescriptions(agentAdapter, associated_agents))
-        promptTemplate = promptTemplate.replace("{{AVAILABLE_TOOLS}}", buildToolDescriptions(toolAdapter))
+        promptTemplate = promptTemplate.replace("{{AVAILABLE_TOOLS}}", buildToolDescriptions(toolAdapter, associated_tools))
         promptTemplate = promptTemplate.replace("{{CONTEXT_HISTORY}}", str(parseSessionHistory(context.getSessionHistory(sessionId))))
-        print("Prompt Template:", promptTemplate)
+        print("Planning prompt: ", promptTemplate)
         return promptTemplate
 
     def parsePlanStepsAndGetPlanAdapter(self, steps):
@@ -43,9 +44,14 @@ class PlanPromptHelper:
             step_type = step['step_type']
             name = step['name']
             inputs = None
+            method_name = None
+            class_name = None
             if step_type == 'tool':
                 inputs = step['input']
-            plan = Plan(step_order, step_type, name, inputs)
+                method_name = step['method']
+            else:
+                class_name = step['agent_class']
+            plan = Plan(step_order, step_type, name, inputs, method_name, class_name)
             planAdapter.addPlanStep(plan)
         return planAdapter
 

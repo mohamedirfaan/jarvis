@@ -16,7 +16,6 @@ class AudioTranscribePool:
     def produce(self, speech_buffer):
         transcribed_text = self.transcribe(speech_buffer)
         self.transcribed_audio += transcribed_text + " "
-        print(self.transcribed_audio)
 
     def consume(self):
         pass

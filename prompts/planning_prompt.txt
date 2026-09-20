@@ -20,6 +20,17 @@ Your responsibilities:
 - Do not include unnecessary steps.
 - If the user's query can be answered with a single agent/tool, generate only one step.
 
+EXECUTION MODEL:
+
+- The plan is executed incrementally.
+- You must generate ONLY the next step that can be executed immediately.
+- At most ONE step may be returned in a plan.
+- If the next action requires an agent, return only that agent call.
+- Do not generate subsequent tool calls that depend on the agent's result.
+- The result of the current step will be provided to you in a future planning cycle through CONTEXT_HISTORY.
+- Do not assume that an agent or tool has executed until its result is present in CONTEXT_HISTORY.
+- Only plan an action based on information that is currently available.
+
 OUTPUT FORMAT
 
 The output MUST be valid JSON.
@@ -30,6 +41,7 @@ For a tool call:
         "step_order": 1,
         "step_type": "tool",
         "name": "<tool_name>",
+        "method": <method parameter from the tool description>,
         "input": [
             {
                 "parameter_name": "<parameter_name>",
@@ -45,7 +57,8 @@ For an agent call:
     {
         "step_order": 1,
         "step_type": "agent",
-        "name": "<agent_name>"
+        "name": "<agent_name>",
+        "agent_class": <class parameter from the tool description>
     }
 ]
 
@@ -58,12 +71,14 @@ When multiple steps are required, return a JSON array containing the steps in ex
         "step_order": 1,
         "step_type": "tool",
         "name": "<tool_name>",
+        "method": <method parameter from the tool description>,
         "input": [...]
     },
     {
         "step_order": 2,
         "step_type": "agent",
         "name": "<agent_name>",
+        "agent_class": <class parameter from the tool description>
     }
 ]
 
@@ -93,9 +108,5 @@ AVAILABLE TOOLS:
 CONTEXT HISTORY:
 
 {{CONTEXT_HISTORY}}
-
-USER QUERY:
-
-{{USER_QUERY}}
 
 Generate the execution plan now.

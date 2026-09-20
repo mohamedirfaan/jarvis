@@ -8,17 +8,20 @@
             "agents": [
                 "system_operations_001"
             ],
-            "tools": ["final_output_001"]
+            "tools": [
+                "speak_001"
+            ]
         }
     ],
     "agents": [
         {
             "id": "system_operations_001",
-            "name": "system_operations",
+            "name": "SystemOperationsAgent",
             "type": "agent",
             "description": "Agent responsible for performing system-level operations such as executing terminal commands.",
+            "class": "workeragents.SystemOperationsAgent",
             "tools": [
-                "terminal_001"
+                "terminal_001", "speak_001"
             ]
         }
     ],
@@ -27,7 +30,7 @@
             "id": "terminal_001",
             "name": "terminal",
             "description": "Execute commands in the system terminal and return the command output.",
-            "method": "",
+            "method": "tools.SystemOperationsTool.SystemOperationsTool.execute",
             "parameters": [
                 {
                     "name": "command",
@@ -38,16 +41,16 @@
             ]
         },
         {
-            "id": "final_output_001,",
+            "id": "speak_001",
             "name": "speak",
-            "description": "Once the orchestrator done all its processes to complete the user query, it has to call this tool to notify the user it has been completed. Or just use it to talk to the user or ask a question",
+            "description": "Once all operations are completed use this tool to inform the user of the the completion status, this can also be used for general communication with the user, or it can be used if the LLM has any questions that it wants to ask the user.",
             "method": "",
             "parameters": [
                 {
                     "name": "query",
                     "type": "string",
                     "required": true,
-                    "description": "The terminal command to execute"
+                    "description": "The query the LLM wants to ask."
                 }
             ]
         }

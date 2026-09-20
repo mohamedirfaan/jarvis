@@ -32,7 +32,8 @@ class AgentAdapter:
             name = simple_agent["name"]
             description = simple_agent["description"]
             tools = simple_agent["tools"]
-            self.addAgent(Agent.Agent(agentType="simpleAgent", agentId=agentId, name=name, description=description, associated_agents=None, associated_tools=tools))
+            className = simple_agent["class"]
+            self.addAgent(Agent.Agent(agentType="simpleAgent", agentId=agentId, name=name, description=description, associated_agents=None, associated_tools=tools, className=className))
 
     def invalidateCaches(self):
         self.cachedAgentNames = None

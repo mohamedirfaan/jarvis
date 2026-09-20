@@ -31,12 +31,12 @@ class ToolAdapter:
     def initialize(self):
         self.tools = []
         tools_dict = ToolDataLoader.getToolData()
-        print("tools dict", tools_dict, type(tools_dict))
         tools_dict = tools_dict["tools"]
         for tool in tools_dict:
             toolId = tool["id"]
             name = tool["name"]
             description = tool["description"]
+            method = tool["method"]
             parameters = tool["parameters"]
-            self.addTool(Tool(toolId, name, description, parameters))
+            self.addTool(Tool(toolId, name, description, method, parameters))
         print("tools initialized")
