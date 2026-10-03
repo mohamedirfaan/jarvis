@@ -90,10 +90,16 @@ class OrchestratorAgent:
 
 
     def spawnAgent(self, step):
+        self._registry.getComponent("SESSION_ADAPTER").addSessionHistoryEntry(self.inputContext.getSessionId(), "agent spawn", step.getName())
         agent = AgentFactory.createWorkerAgent(self.inputContext.getSessionId(), self.agentId, step)
-        agent.run()
+        workerAgentStatus = agent.run()
+        if workerAgentStatus == "completed":
+            pass
+        elif workerAgentStatus == "failed":
+            pass
 
     def executeTool(self, step):
+        self._registry.getComponent("SESSION_ADAPTER").addSessionHistoryEntry(self.inputContext.getSessionId(), "tool call", step.getName())
         print("executing tool")
         print(step)
         self.shutDown()

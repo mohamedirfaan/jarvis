@@ -10,6 +10,10 @@ class SessionDAO:
         query = "select * from session_history WHERE session_id=%s"
         return self.db.execute_query(query, (sessionId, ))
 
+    def addSessionHistoryEntry(self, sessionId, role, content):
+        query = "INSERT INTO session_history(session_id, role, content) values(%s, %s, %s) returning id"
+        return self.db.execute_query(query, (sessionId, role, content, ))
+
     def createSession(self, session_name):
         query = "INSERT INTO sessions(session_name) values(%s) RETURNING id"
         return self.db.execute_query(query, (session_name, ))

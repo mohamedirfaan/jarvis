@@ -1,4 +1,6 @@
+import json
 import cache.ToolDataLoader
+import importlib
 
 class SimpleAgent:
     def __init__(self, inputContext):
@@ -25,6 +27,7 @@ class SimpleAgent:
     def run(self):
         while self.isActive() and not self._terminate_condition_met:
             self.executeCycle()
+        return self.getAgentStatus()
 
     def isActive(self):
         return self._isActive
@@ -32,11 +35,11 @@ class SimpleAgent:
     def executeCycle(self):
         status = self.getAgentStatus()
         if status == "running":
-            pass
+            self.executeInstruction()
         elif status == "paused":
             pass
         elif status == "completed":
-            pass
+            self.shutdown()
         elif status == "failed":
             pass
 
@@ -45,20 +48,40 @@ class SimpleAgent:
         return executionAdapter.getExecutionStatus(self.inputContext.getAgentId())[0][0]
 
     def executeInstruction(self):
-        aiClient = self.__registry.getComponent("AI_CLIENT_ADAPTER")
-        prompt = self.getToolToExecute()
-        response = aiClient.send(prompt)
-        self.executeTool(response)
+        response = self.getToolToExecute()
+        self.executeTool(json.loads(response))
 
     def executeTool(self, response):
-        print(response)
+        self.__registry.getComponent("SESSION_ADAPTER").addSessionHistoryEntry(self.inputContext.getSessionId(), "tool call", response["name"])
+        if response["name"]== "speak":
+            print(response["input"])
+            self.__registry.getComponent("EXECUTION_ADAPTER").updateAgentExecutionStatus(self.inputContext.getAgentId(), "completed")
+            return
+        method = response["method"]
+        lastdot = method.rfind(".")
+        secondLastDot = method[0:lastdot].rfind(".")
+        methodName = method[lastdot+1:]
+        className = method[secondLastDot+1:lastdot]
+        print(methodName, className)
+
+        tool_Class = getattr(importlib.import_module(method[:secondLastDot]), className)()
+        method = getattr(tool_Class, methodName)
+        parameters = []
+        for i in response["input"].values():
+            parameters.append(i)
+        tool_result = method(*parameters)
+        if tool_result is not None:
+            self.__registry.getComponent("SESSION_ADAPTER").addSessionHistoryEntry(
+                self.inputContext.getSessionId(), "tool result", str(tool_result)
+            )
+
 
     def getToolToExecute(self):
         aiClient = self.__registry.getComponent("AI_CLIENT_ADAPTER")
         component = self.__registry.getComponent("SESSION_ADAPTER")
         prompt = cache.ToolDataLoader.getPrompt("toolRetrievalPrompt.txt")
         prompt = prompt.replace("{{AGENT_NAME}}", self.agent_name)
-        prompt = prompt.replace("{{CONTEXT_HISTORY}}", str(self.parseSessionHistory(component.getSessionHistory())))
+        prompt = prompt.replace("{{CONTEXT_HISTORY}}", str(self.parseSessionHistory(component.getSessionHistory(self.inputContext.getSessionId()))))
         prompt = prompt.replace("{{TOOLS}}", self.getToolDescriptions())
         response = aiClient.send(prompt)
         return response
@@ -75,6 +98,9 @@ class SimpleAgent:
         tools = toolData["tools"]
         tool_description = ""
         for tool in tools:
-            if tool.getToolId() in self.available_tools:
-                tool_description += "- Name : " + tool.getName() + " Description : " + tool.getDescription() + " Method: " + tool.getMethod() + " Parameters: " + tool.getParameters() + "\n"
+            if tool['id'] in self.available_tools:
+                tool_description += "- Name : " + tool['name'] + " Description : " + tool['description'] + " Method: " + tool['method'] + " Parameters: " + str(tool['parameters']) + "\n"
         return tool_description
+
+    def shutdown(self):
+        self._terminate_condition_met = True
