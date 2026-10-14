@@ -8,7 +8,7 @@ import subprocess
 class Terminal:
     """Execute commands and return their output after they complete."""
 
-    def __init__(self, timeout: float | None = None):
+    def __init__(self, timeout: float | None = 30.0):
         self.timeout = timeout
         self.terminal_history: list[str] = []
 
@@ -24,6 +24,7 @@ class Terminal:
             completed = subprocess.run(
                 command,
                 capture_output=True,
+                stdin=subprocess.DEVNULL,
                 text=True,
                 encoding="utf-8",
                 errors="replace",
