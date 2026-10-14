@@ -101,5 +101,8 @@ class OrchestratorAgent:
     def executeTool(self, step):
         self._registry.getComponent("SESSION_ADAPTER").addSessionHistoryEntry(self.inputContext.getSessionId(), "tool call", step.getName())
         print("executing tool")
-        print(step)
+        parameters = []
+        for i in step.getStepInput():
+            parameters.append(i["parameter_value"])
+        print(parameters)
         self.shutDown()
