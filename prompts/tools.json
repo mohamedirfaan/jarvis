@@ -30,7 +30,9 @@
             "id": "terminal_001",
             "name": "terminal",
             "description": "Execute commands in the system terminal and return the command output.",
-            "method": "tools.SystemOperationsTool.SystemOperationsTool.execute",
+            "module": "tools.SystemOperationsTool",
+            "class": "SystemOperationsTool",
+            "method": "execute",
             "parameters": [
                 {
                     "name": "command",
@@ -44,7 +46,9 @@
             "id": "speak_001",
             "name": "speak",
             "description": "Once all operations are completed use this tool to inform the user of the the completion status, this can also be used for general communication with the user, or it can be used if the LLM has any questions that it wants to ask the user.",
+            "class": "",
             "method": "",
+            "module": "",
             "parameters": [
                 {
                     "name": "query",

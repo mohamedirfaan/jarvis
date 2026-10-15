@@ -4,7 +4,7 @@ import cache.ToolDataLoader
 
 def buildToolDescriptions(toolAdapter, associated_tools):
     toolDescription = ""
-    for tool in toolAdapter.getTools():
+    for tool in toolAdapter.getTools().values():
         if tool.getToolId() in associated_tools:
             toolDescription += "- Name : " + tool.getName() + " Description : " + tool.getDescription() + " Method: " + tool.getMethod() + " Parameters: " + str(tool.getParameters()) + "\n"
     return toolDescription

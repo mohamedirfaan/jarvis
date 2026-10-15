@@ -14,12 +14,18 @@ class ExecutionDAO:
             return self.db.execute_query(query, (agent_name, execution_status))
 
     def updateAgentExecutionStatus(self, agent_id, execution_status):
-        query = "update execution set execution_status = %s where id = %s"
-        return self.db.execute_query(query, (execution_status, agent_id))
+        try:
+            query = "update execution set execution_status = %s where id = %s"
+            return self.db.execute_query(query, (execution_status, agent_id))
+        except Exception as e:
+            print(e)
 
     def getExecutionStatus(self, agent_id):
-        query = "select execution_status from execution where id = %s"
-        return self.db.execute_query(query, (agent_id,))
+        try:
+            query = "select execution_status from execution where id = %s"
+            return self.db.execute_query(query, (agent_id,))
+        except Exception as e:
+            print(e)
 
     def deleteAgentExecution(self, agentId):
         query = "delete from execution where id = %s"

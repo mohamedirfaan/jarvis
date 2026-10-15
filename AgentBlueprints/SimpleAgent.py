@@ -49,7 +49,7 @@ class SimpleAgent:
 
     def executeInstruction(self):
         response = self.getToolToExecute()
-        self.executeTool(json.loads(response))
+        return self.__registry.getComponent("TOOL_ADAPTER").getTool(json.loads(response)["name"])
 
     def executeTool(self, response):
         self.__registry.getComponent("SESSION_ADAPTER").addSessionHistoryEntry(self.inputContext.getSessionId(), "tool call", response["name"])
@@ -57,14 +57,12 @@ class SimpleAgent:
             print(response["input"])
             self.__registry.getComponent("EXECUTION_ADAPTER").updateAgentExecutionStatus(self.inputContext.getAgentId(), "completed")
             return
-        method = response["method"]
-        lastdot = method.rfind(".")
-        secondLastDot = method[0:lastdot].rfind(".")
-        methodName = method[lastdot+1:]
-        className = method[secondLastDot+1:lastdot]
+        methodName = response.getMethod()
+        className = response.getClassName()
+        moduleName = response.getModule()
         print(methodName, className)
 
-        tool_Class = getattr(importlib.import_module(method[:secondLastDot]), className)()
+        tool_Class = getattr(importlib.import_module(moduleName), className)()
         method = getattr(tool_Class, methodName)
         parameters = []
         for i in response["input"].values():

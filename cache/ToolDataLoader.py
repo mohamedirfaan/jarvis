@@ -1,14 +1,14 @@
 import json
 import os.path
 
-json_file = open('C:\\Code\\Jarvis\\prompts\\tools.json')
+json_file = open('/home/irfaan-24083/jarvis/prompts/tools.json')
 toolData = json.load(json_file)
 
 def getToolData():
     return toolData
 
 prompts = {}
-prompt_paths = ["C:\\Code\\Jarvis\\prompts\\toolRetrievalPrompt.txt", "C:\\Code\\Jarvis\\prompts\\planning_prompt.txt"]
+prompt_paths = ["/home/irfaan-24083/jarvis/prompts/toolRetrievalPrompt.txt", "/home/irfaan-24083/jarvis/prompts/planning_prompt.txt"]
 
 for i in prompt_paths:
     prompt_file_content = ""

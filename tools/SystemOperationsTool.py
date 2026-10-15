@@ -47,4 +47,7 @@ class SystemOperationsTool:
         self.terminals = {1: Terminal()}
 
     def execute(self, query: str) -> str:
-        return self.terminals[1].execute(query)
+        try:
+            return self.terminals[1].execute(query)
+        except Exception as e:
+            return f"Error: {e}"

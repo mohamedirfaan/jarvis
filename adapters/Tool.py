@@ -1,8 +1,10 @@
 class Tool:
-    def __init__(self, toolId, name, description, method, parameters):
+    def __init__(self, toolId, name, description, module, className, method, parameters):
         self.id = toolId
         self.name = name
         self.description = description
+        self.module = module
+        self.className = className
         self.method = method
         self.parameters = parameters
 
@@ -20,3 +22,9 @@ class Tool:
 
     def getMethod(self):
         return self.method
+
+    def getClassName(self):
+        return self.className
+
+    def getModule(self):
+        return self.module

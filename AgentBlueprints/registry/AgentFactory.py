@@ -51,4 +51,5 @@ def getWorkerAgentRegistry():
     registry.registerComponent("SESSION_ADAPTER", SessionDAO())
     registry.registerComponent("AI_CLIENT_ADAPTER", AIClient())
     registry.registerComponent("EXECUTION_ADAPTER", ExecutionDAO())
+    registry.registerComponent("TOOL_ADAPTER", ToolAdapter())
     return registry
