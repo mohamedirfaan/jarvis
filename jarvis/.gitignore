@@ -1,0 +1,10 @@
+# Virtual environments
+venv/
+.venv/
+
+# Python bytecode and cache directories
+__pycache__/
+*.py[cod]
+
+# IDE project files
+.idea/
