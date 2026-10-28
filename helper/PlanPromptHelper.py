@@ -16,24 +16,16 @@ def buildAgentDescriptions(agentAdapter, associated_agents):
             agentDescriptions += "- Name : "+ agent.getName() + " Description : " + agent.getDescription() + " Class Name: " + agent.getClassName() + "\n"
     return agentDescriptions
 
-def parseSessionHistory(sessionHistory):
-    history = []
-    for session in sessionHistory:
-        currHistory = {"message": session[3], "context_type": session[2]}
-        history.append(currHistory)
-    return history
-
 class PlanPromptHelper:
     def __init__(self):
         self.planPromptPath = "C:\\Code\\Jarvis\\prompts\\planning_prompt.txt"
 
-    def generatePlanningPrompt(self, sessionId, context, toolAdapter, agentAdapter, associated_agents, associated_tools):
+    def generatePlanningPrompt(self, toolAdapter, agentAdapter, associated_agents, associated_tools):
         promptTemplate = cache.ToolDataLoader.getPrompt("planning_prompt.txt")
 
 
         promptTemplate = promptTemplate.replace("{{AVAILABLE_AGENTS}}", buildAgentDescriptions(agentAdapter, associated_agents))
         promptTemplate = promptTemplate.replace("{{AVAILABLE_TOOLS}}", buildToolDescriptions(toolAdapter, associated_tools))
-        promptTemplate = promptTemplate.replace("{{CONTEXT_HISTORY}}", str(parseSessionHistory(context.getSessionHistory(sessionId))))
         print("Planning prompt: ", promptTemplate)
         return promptTemplate
 

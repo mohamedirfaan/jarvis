@@ -1,7 +1,9 @@
 import json
 
 from AgentBlueprints.registry import AgentFactory
-from PromptHelper.PlanPromptHelper import PlanPromptHelper
+from helper.PlanPromptHelper import PlanPromptHelper
+from helper.SessionHelper import *
+from constants.ContextType import ContextType
 from adapters.PlanAdapter import PlanAdapter
 from cache import ToolDataLoader
 
@@ -56,13 +58,13 @@ class OrchestratorAgent:
 
     def handlePlanningPhase(self):
         aiClient = self._registry.getComponent("AI_CLIENT_ADAPTER")
-        planningPrompt = self.promptBuilder.generatePlanningPrompt(self.inputContext.getSessionId(),
-                                                                   self._registry.getComponent("SESSION_ADAPTER"),
-                                                                   self._registry.getComponent("TOOL_ADAPTER"),
+        planningPrompt = self.promptBuilder.generatePlanningPrompt(self._registry.getComponent("TOOL_ADAPTER"),
                                                                    self._registry.getComponent("AGENT_ADAPTER"),
                                                                    self.associated_agents,
                                                                    self.associated_tools)
-        response = aiClient.send(planningPrompt)
+        sessionHelperInstance = SessionHelper(self._registry.getComponent("SESSION_ADAPTER"))
+        messages = sessionHelperInstance.getSessionHistory(self.inputContext.getSessionId())
+        response = aiClient.send(planningPrompt, messages)
         print("Plan Response: ",response)
         self.planAdapter = self.promptBuilder.parsePlanStepsAndGetPlanAdapter(json.loads(response))
         self._registry.getComponent("EXECUTION_ADAPTER").updateAgentExecutionStatus(self.agentId, "running")
@@ -90,7 +92,7 @@ class OrchestratorAgent:
 
 
     def spawnAgent(self, step):
-        self._registry.getComponent("SESSION_ADAPTER").addSessionHistoryEntry(self.inputContext.getSessionId(), "agent spawn", step.getName())
+        self._registry.getComponent("SESSION_ADAPTER").addSessionHistoryEntry(self.inputContext.getSessionId(), ContextType.AGENT_SPAWN.value, step.getName())
         agent = AgentFactory.createWorkerAgent(self.inputContext.getSessionId(), self.agentId, step)
         workerAgentStatus = agent.run()
         if workerAgentStatus == "completed":
@@ -99,7 +101,7 @@ class OrchestratorAgent:
             pass
 
     def executeTool(self, step):
-        self._registry.getComponent("SESSION_ADAPTER").addSessionHistoryEntry(self.inputContext.getSessionId(), "tool call", step.getName())
+        self._registry.getComponent("SESSION_ADAPTER").addSessionHistoryEntry(self.inputContext.getSessionId(), ContextType.TOOL_CALL.value, step.getName())
         print("executing tool")
         parameters = []
         for i in step.getStepInput():

@@ -1,12 +1,9 @@
-"""Synchronous command execution for agent tools."""
-
 from __future__ import annotations
 
 import os
 import subprocess
 
 class Terminal:
-    """Execute commands and return their output after they complete."""
 
     def __init__(self, timeout: float | None = 30.0):
         self.timeout = timeout
@@ -15,10 +12,6 @@ class Terminal:
     def execute(self, query: str) -> str:
         if not isinstance(query, str) or not query.strip():
             raise ValueError("Terminal command must be a non-empty string.")
-
-        # A pseudo-terminal read is chunk-based and may contain only echoed
-        # input or a prompt.  Running the command directly gives the agent a
-        # reliable completion point and captures stdout and stderr together.
         command = ["cmd.exe", "/d", "/s", "/c", query] if os.name == "nt" else ["/bin/sh", "-lc", query]
         try:
             completed = subprocess.run(

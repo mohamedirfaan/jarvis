@@ -45,3 +45,8 @@ class ToolAdapter:
             parameters = tool["parameters"]
             self.addTool(Tool(toolId, name, description, module, className, method, parameters))
         print("tools initialized")
+
+    def getToolId(self, toolName):
+        if toolName in self.tools:
+            return self.tools[toolName].getToolId()
+        return "dummyToolId"

@@ -8,6 +8,8 @@ class AIClient:
         self.chat = self.client.chats.create(model=self.model)
         print("Initialization complete")
 
-    def send(self, message):
-        interaction = self.chat.send_message(message)
+    def send(self, planningPrompt, message):
+        messages = [{"system": planningPrompt}]
+        messages.extend(message)
+        interaction = self.chat.send_message(str(messages))
         return interaction.text

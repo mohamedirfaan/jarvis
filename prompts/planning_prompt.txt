@@ -5,7 +5,6 @@ Your job is to analyze the user's query and generate an execution plan consistin
 You will be provided with:
 1. AVAILABLE_AGENTS
 2. AVAILABLE_TOOLS
-3. CONTEXT_HISTORY
 
 Your responsibilities:
 
@@ -27,8 +26,8 @@ EXECUTION MODEL:
 - At most ONE step may be returned in a plan.
 - If the next action requires an agent, return only that agent call.
 - Do not generate subsequent tool calls that depend on the agent's result.
-- The result of the current step will be provided to you in a future planning cycle through CONTEXT_HISTORY.
-- Do not assume that an agent or tool has executed until its result is present in CONTEXT_HISTORY.
+- The result of the current step will be provided to you in a future planning cycle through context history.
+- Do not assume that an agent or tool has executed until its result is present in history.
 - Only plan an action based on information that is currently available.
 
 OUTPUT FORMAT
@@ -104,9 +103,5 @@ AVAILABLE AGENTS:
 AVAILABLE TOOLS:
 
 {{AVAILABLE_TOOLS}}
-
-CONTEXT HISTORY:
-
-{{CONTEXT_HISTORY}}
 
 Generate the execution plan now.

@@ -1,5 +1,7 @@
 import json
 import cache.ToolDataLoader
+from helper.SessionHelper import SessionHelper
+from constants.ContextType import ContextType
 import importlib
 
 class SimpleAgent:
@@ -49,28 +51,29 @@ class SimpleAgent:
 
     def executeInstruction(self):
         response = self.getToolToExecute()
+        self.executeTool(json.loads(response))
         return self.__registry.getComponent("TOOL_ADAPTER").getTool(json.loads(response)["name"])
 
     def executeTool(self, response):
-        self.__registry.getComponent("SESSION_ADAPTER").addSessionHistoryEntry(self.inputContext.getSessionId(), "tool call", response["name"])
+        self.__registry.getComponent("SESSION_ADAPTER").addSessionHistoryEntry(self.inputContext.getSessionId(), ContextType.TOOL_CALL.value, response["name"])
         if response["name"]== "speak":
-            print(response["input"])
+            print(response["parameters"])
             self.__registry.getComponent("EXECUTION_ADAPTER").updateAgentExecutionStatus(self.inputContext.getAgentId(), "completed")
             return
-        methodName = response.getMethod()
-        className = response.getClassName()
-        moduleName = response.getModule()
+        methodName = response["method"]
+        className = response["class"]
+        moduleName = response["module"]
         print(methodName, className)
 
         tool_Class = getattr(importlib.import_module(moduleName), className)()
         method = getattr(tool_Class, methodName)
         parameters = []
-        for i in response["input"].values():
+        for i in response["parameters"].values():
             parameters.append(i)
         tool_result = method(*parameters)
         if tool_result is not None:
             self.__registry.getComponent("SESSION_ADAPTER").addSessionHistoryEntry(
-                self.inputContext.getSessionId(), "tool result", str(tool_result)
+                self.inputContext.getSessionId(), ContextType.TOOL_RESULT.value, str(tool_result)
             )
 
 
@@ -79,9 +82,9 @@ class SimpleAgent:
         component = self.__registry.getComponent("SESSION_ADAPTER")
         prompt = cache.ToolDataLoader.getPrompt("toolRetrievalPrompt.txt")
         prompt = prompt.replace("{{AGENT_NAME}}", self.agent_name)
-        prompt = prompt.replace("{{CONTEXT_HISTORY}}", str(self.parseSessionHistory(component.getSessionHistory(self.inputContext.getSessionId()))))
         prompt = prompt.replace("{{TOOLS}}", self.getToolDescriptions())
-        response = aiClient.send(prompt)
+        sessionHelperInstance = SessionHelper(component)
+        response = aiClient.send(prompt, sessionHelperInstance.getSessionHistory(self.inputContext.getSessionId()))
         return response
 
     def parseSessionHistory(self, history):
@@ -97,7 +100,7 @@ class SimpleAgent:
         tool_description = ""
         for tool in tools:
             if tool['id'] in self.available_tools:
-                tool_description += "- Name : " + tool['name'] + " Description : " + tool['description'] + " Method: " + tool['method'] + " Parameters: " + str(tool['parameters']) + "\n"
+                tool_description += "-Id: " + tool["id"] +"\n-Name : " + tool['name'] + "\n-Description : " + tool['description'] + "\n-Method: " + tool['method'] + "\n-Parameters: " + str(tool['parameters']) + "\n-Class: " + tool["class"] + "\n-Module: " + tool["module"] + "\n"
         return tool_description
 
     def shutdown(self):
