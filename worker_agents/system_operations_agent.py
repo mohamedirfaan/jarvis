@@ -1,4 +1,4 @@
-from AgentBlueprints.SimpleAgent import SimpleAgent
+from agent_blueprints.simple_agent import SimpleAgent
 
 
 class SystemOperationsAgent(SimpleAgent):

@@ -1,5 +1,5 @@
-from adapters.ToolAdapter import ToolAdapter
-from constants.ContextType import ContextType
+from adapters.tool_adapter import ToolAdapter
+from constants.context_type import ContextType
 def parseSessionHistory(sessionHistory):
     history = []
     for session in sessionHistory:

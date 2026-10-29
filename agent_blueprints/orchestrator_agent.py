@@ -1,11 +1,11 @@
 import json
 
-from AgentBlueprints.registry import AgentFactory
-from helper.PlanPromptHelper import PlanPromptHelper
-from helper.SessionHelper import *
-from constants.ContextType import ContextType
-from adapters.PlanAdapter import PlanAdapter
-from cache import ToolDataLoader
+from agent_blueprints.registry import agent_factory
+from helpers.plan_prompt_helper import PlanPromptHelper
+from helpers.session_helper import *
+from constants.context_type import ContextType
+from adapters.plan_adapter import PlanAdapter
+from tool_catalog import tool_data_loader as ToolDataLoader
 
 
 class OrchestratorAgent:
@@ -93,7 +93,7 @@ class OrchestratorAgent:
 
     def spawnAgent(self, step):
         self._registry.getComponent("SESSION_ADAPTER").addSessionHistoryEntry(self.inputContext.getSessionId(), ContextType.AGENT_SPAWN.value, step.getName())
-        agent = AgentFactory.createWorkerAgent(self.inputContext.getSessionId(), self.agentId, step)
+        agent = agent_factory.createWorkerAgent(self.inputContext.getSessionId(), self.agentId, step)
         workerAgentStatus = agent.run()
         if workerAgentStatus == "completed":
             pass

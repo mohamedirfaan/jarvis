@@ -19,7 +19,7 @@
             "name": "SystemOperationsAgent",
             "type": "agent",
             "description": "Agent responsible for performing system-level operations such as executing terminal commands.",
-            "class": "workeragents.SystemOperationsAgent",
+            "class": "worker_agents.system_operations_agent",
             "tools": [
                 "terminal_001", "speak_001"
             ]
@@ -30,7 +30,7 @@
             "id": "terminal_001",
             "name": "terminal",
             "description": "Execute commands in the system terminal and return the command output.",
-            "module": "tools.SystemOperationsTool",
+            "module": "tools.system_operations_tool",
             "class": "SystemOperationsTool",
             "method": "execute",
             "parameters": [

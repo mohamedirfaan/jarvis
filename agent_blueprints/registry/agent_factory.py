@@ -1,13 +1,13 @@
 import importlib
-from AgentBlueprints.OrchestratorAgent import OrchestratorAgent
-from AgentBlueprints.registry.AgentComponentRegistry import AgentComponentRegistry
-from AgentBlueprints.registry.AgentInputContext import AgentInputContext
-from Agents.AIClient import AIClient
-from adapters.AgentAdapter import AgentAdapter
-from adapters.ToolAdapter import ToolAdapter
-from dao.ExecutionDAO import ExecutionDAO
-from dao.PlanStepDAO import PlanStepDAO
-from dao.SessionDAO import SessionDAO
+from agent_blueprints.orchestrator_agent import OrchestratorAgent
+from agent_blueprints.registry.agent_component_registry import AgentComponentRegistry
+from agent_blueprints.registry.agent_input_context import AgentInputContext
+from ai_clients.ai_client import AIClient
+from adapters.agent_adapter import AgentAdapter
+from adapters.tool_adapter import ToolAdapter
+from repositories.execution_repository import ExecutionDAO
+from repositories.plan_step_repository import PlanStepDAO
+from repositories.session_repository import SessionDAO
 
 
 def createOrchestratorAgent(sessionId, agentName):

@@ -1,6 +1,6 @@
 import json
-from adapters.Tool import Tool
-from cache import ToolDataLoader
+from adapters.tool import Tool
+from tool_catalog import tool_data_loader as ToolDataLoader
 
 
 class ToolAdapter:

@@ -1,7 +1,7 @@
 import json
-import cache.ToolDataLoader
-from helper.SessionHelper import SessionHelper
-from constants.ContextType import ContextType
+from tool_catalog import tool_data_loader as ToolDataLoader
+from helpers.session_helper import SessionHelper
+from constants.context_type import ContextType
 import importlib
 
 class SimpleAgent:
@@ -19,7 +19,7 @@ class SimpleAgent:
         self.__registry = registry
 
     def getAvailableTools(self):
-        toolData = cache.ToolDataLoader.getToolData()
+        toolData = ToolDataLoader.getToolData()
         agents = toolData["agents"]
         for agent in agents:
             if agent["name"] == self.agent_name:
@@ -80,7 +80,7 @@ class SimpleAgent:
     def getToolToExecute(self):
         aiClient = self.__registry.getComponent("AI_CLIENT_ADAPTER")
         component = self.__registry.getComponent("SESSION_ADAPTER")
-        prompt = cache.ToolDataLoader.getPrompt("toolRetrievalPrompt.txt")
+        prompt = ToolDataLoader.getPrompt("tool_retrieval_prompt.txt")
         prompt = prompt.replace("{{AGENT_NAME}}", self.agent_name)
         prompt = prompt.replace("{{TOOLS}}", self.getToolDescriptions())
         sessionHelperInstance = SessionHelper(component)
@@ -95,7 +95,7 @@ class SimpleAgent:
         return parsedHistory
 
     def getToolDescriptions(self):
-        toolData = cache.ToolDataLoader.getToolData()
+        toolData = ToolDataLoader.getToolData()
         tools = toolData["tools"]
         tool_description = ""
         for tool in tools:

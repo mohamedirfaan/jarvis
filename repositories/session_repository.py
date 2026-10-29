@@ -1,5 +1,5 @@
 import time
-from dao.DBUtil import DBUtil
+from repositories.database_util import DBUtil
 
 
 class SessionDAO:

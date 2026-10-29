@@ -1,5 +1,5 @@
-from cache import ToolDataLoader
-from . import Agent
+from tool_catalog import tool_data_loader as ToolDataLoader
+from . import agent as Agent
 import json
 
 

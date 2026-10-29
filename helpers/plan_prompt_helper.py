@@ -1,6 +1,6 @@
-from adapters.PlanAdapter import PlanAdapter
-from adapters.Plan import Plan
-import cache.ToolDataLoader
+from adapters.plan_adapter import PlanAdapter
+from adapters.plan import Plan
+import tool_catalog.tool_data_loader
 
 def buildToolDescriptions(toolAdapter, associated_tools):
     toolDescription = ""
@@ -21,7 +21,7 @@ class PlanPromptHelper:
         self.planPromptPath = "C:\\Code\\Jarvis\\prompts\\planning_prompt.txt"
 
     def generatePlanningPrompt(self, toolAdapter, agentAdapter, associated_agents, associated_tools):
-        promptTemplate = cache.ToolDataLoader.getPrompt("planning_prompt.txt")
+        promptTemplate = tool_catalog.tool_data_loader.getPrompt("planning_prompt.txt")
 
 
         promptTemplate = promptTemplate.replace("{{AVAILABLE_AGENTS}}", buildAgentDescriptions(agentAdapter, associated_agents))

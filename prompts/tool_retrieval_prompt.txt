@@ -50,7 +50,7 @@ For example, given the following tool definition:
     "id": "terminal_001",
     "name": "terminal",
     "description": "Execute commands in the system terminal and return the command output.",
-    "module": "tools.SystemOperationsTool",
+    "module": "tools.system_operations_tool",
     "class": "SystemOperationsTool",
     "method": "execute",
     "parameters": [
@@ -73,7 +73,7 @@ The expected output is:
     "id": "terminal_001",
     "name": "terminal",
     "description": "Execute commands in the system terminal and return the command output.",
-    "module": "tools.SystemOperationsTool",
+    "module": "tools.system_operations_tool",
     "class": "SystemOperationsTool",
     "method": "execute",
     "parameters": {

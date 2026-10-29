@@ -8,7 +8,7 @@ def getToolData():
     return toolData
 
 prompts = {}
-prompt_paths = ["/home/irfaan-24083/jarvis/prompts/toolRetrievalPrompt.txt", "/home/irfaan-24083/jarvis/prompts/planning_prompt.txt"]
+prompt_paths = ["/home/irfaan-24083/jarvis/prompts/tool_retrieval_prompt.txt", "/home/irfaan-24083/jarvis/prompts/planning_prompt.txt"]
 
 for i in prompt_paths:
     prompt_file_content = ""

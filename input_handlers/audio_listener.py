@@ -5,7 +5,7 @@ import torch
 import sounddevice as sd
 from threading import Thread
 from silero_vad import load_silero_vad
-from AudioTranscribePool import AudioTranscribePool
+from input_handlers.audio_transcription_pool import AudioTranscribePool
 
 SAMPLE_RATE = 16000
 VAD_THRESHOLD = 0.5

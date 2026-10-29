@@ -1,4 +1,4 @@
-from AgentBlueprints.registry.AgentFactory import *
+from agent_blueprints.registry.agent_factory import *
 
 
 print("main started")
