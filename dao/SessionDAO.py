@@ -7,7 +7,7 @@ class SessionDAO:
         self.db = DBUtil()
 
     def getSessionHistory(self, sessionId):
-        query = "select * from session_history WHERE session_id=%s"
+        query = "select * from session_history WHERE session_id=%s order by created_at"
         return self.db.execute_query(query, (sessionId, ))
 
     def addSessionHistoryEntry(self, sessionId, role, content):
