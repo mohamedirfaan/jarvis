@@ -43,6 +43,15 @@
             ]
         },
         {
+            "id": "terminal_002",
+            "name": "getTerminalHistory",
+            "description": "When the terminal command did not return the entire output or did not return the output at all. You can use this tool to get the next output, or see what the terminal has returned.",
+            "module": "tools.system_operations_tool",
+            "class": "SystemOperationsTool",
+            "method": "getTerminalContent",
+            "parameters": []
+        },
+        {
             "id": "speak_001",
             "name": "speak",
             "description": "Once all operations are completed use this tool to inform the user of the the completion status, this can also be used for general communication with the user, or it can be used if the LLM has any questions that it wants to ask the user.",
